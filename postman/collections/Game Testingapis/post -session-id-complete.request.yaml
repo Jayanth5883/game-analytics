@@ -1,0 +1,5 @@
+$kind: http-request
+name: post /session/id/complete
+url: ""
+method: GET
+order: 8000
