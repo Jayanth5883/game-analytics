@@ -69,8 +69,6 @@ app.get("/", (req, res) => {
         <body>
             <div class="container">
                 <h1>Welcome to Game Analytics API</h1>
-                <p>Server Status: Running</p>
-                <p>Your backend API is successfully deployed.</p>
                 <a href="/api-docs">Open API Documentation</a>
             </div>
         </body>

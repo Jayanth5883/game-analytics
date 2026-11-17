@@ -41,7 +41,7 @@ const beatSaberAnalyticsSchema = z.object({
     if (data.totalSelections > data.totalAttempts) {
         ctx.addIssue({
             code: "custom",
-            path: ["totalHits"],
+            path: ["totalSelections"],
             message: "Total hits cannot exceed total attempts"
         });
     }
