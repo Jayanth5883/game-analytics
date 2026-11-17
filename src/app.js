@@ -14,14 +14,45 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-// Pretty-print JSON responses
-app.set("json spaces", 4);
 
 // CORS configuration
 app.use(cors());
 
 // Parse JSON request bodies
 app.use(express.json({ limit: "100kb" }));
+
+app.use((req, res, next) => {
+    const originalJson = res.json.bind(res);
+
+    res.json = (data) => {
+        const convertDates = (value) => {
+            if (value instanceof Date) {
+                return value.toLocaleString("en-IN", {
+                    timeZone: "Asia/Kolkata"
+                });
+            }
+
+            if (Array.isArray(value)) {
+                return value.map(convertDates);
+            }
+
+            if (value && typeof value === "object") {
+                return Object.fromEntries(
+                    Object.entries(value).map(([key, val]) => [
+                        key,
+                        convertDates(val)
+                    ])
+                );
+            }
+
+            return value;
+        };
+
+        return originalJson(convertDates(data));
+    };
+
+    next();
+});
 
 // Main Root API
 app.get("/", (req, res) => {
@@ -31,50 +62,69 @@ app.get("/", (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Game Analytics API</title>
+            <title>Backend Game Analytics API</title>
+
             <style>
+                * {
+                    box-sizing: border-box;
+                }
+
                 body {
+                    margin: 0;
+                    min-height: 100vh;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: #f5f7fa;
                     font-family: Arial, sans-serif;
-                    background: #f4f6f9;
-                    text-align: center;
-                    padding: 50px 20px;
                 }
+
                 .container {
-                    background: white;
-                    max-width: 500px;
-                    margin: auto;
-                    padding: 30px;
+                    text-align: center;
+                    padding: 45px 35px;
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
                     border-radius: 12px;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
                 }
+
                 h1 {
-                    color: #222;
+                    margin: 0 0 28px;
+                    color: #172033;
+                    font-size: 28px;
+                    font-weight: 600;
                 }
-                p {
-                    color: #555;
-                }
-                a {
+
+                .button {
                     display: inline-block;
-                    margin-top: 15px;
-                    padding: 12px 20px;
-                    background: #2563eb;
-                    color: white;
+                    padding: 13px 25px;
+                    background: #727782;
+                    color: #ffffff;
                     text-decoration: none;
-                    border-radius: 6px;
+                    border-radius: 7px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    transition: background 0.2s ease;
                 }
-                a:hover {
-                    background: #1d4ed8;
+
+                .button:hover {
+                    background: #b6b7bc;
                 }
             </style>
         </head>
+
         <body>
-            <div class="container">
-                <h1>Welcome to Game Analytics API</h1>
-                <a href="/api-docs">Open API Documentation</a>
-            </div>
+            <main class="container">
+                <h1>Backend Game Analytics API</h1>
+                <a class="button" href="/api-docs">API Documentation</a>
+            </main>
         </body>
         </html>
     `);
 });
+
 
 // API routes
 app.use("/api/auth", authRoutes);
