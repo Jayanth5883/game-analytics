@@ -14,19 +14,69 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
+// Pretty-print JSON responses
+app.set("json spaces", 4);
+
 // CORS configuration
 app.use(cors());
 
 // Parse JSON request bodies
 app.use(express.json({ limit: "100kb" }));
 
-app.get("/",(req,res)=>{
-    res.status(200).json({
-                success: true,
-        message: "Welcome to Game Analytics API",
-        documentation: "https://game-analytics-phs9.onrender.com/api-docs"
-    })
-})
+// Main Root API
+app.get("/", (req, res) => {
+    res.status(200).send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Game Analytics API</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background: #f4f6f9;
+                    text-align: center;
+                    padding: 50px 20px;
+                }
+                .container {
+                    background: white;
+                    max-width: 500px;
+                    margin: auto;
+                    padding: 30px;
+                    border-radius: 12px;
+                }
+                h1 {
+                    color: #222;
+                }
+                p {
+                    color: #555;
+                }
+                a {
+                    display: inline-block;
+                    margin-top: 15px;
+                    padding: 12px 20px;
+                    background: #2563eb;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 6px;
+                }
+                a:hover {
+                    background: #1d4ed8;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Welcome to Game Analytics API</h1>
+                <p>Server Status: Running</p>
+                <p>Your backend API is successfully deployed.</p>
+                <a href="/api-docs">Open API Documentation</a>
+            </div>
+        </body>
+        </html>
+    `);
+});
 
 // API routes
 app.use("/api/auth", authRoutes);
