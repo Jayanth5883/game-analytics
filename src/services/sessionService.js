@@ -111,7 +111,7 @@ export const completeGameSession = async (
             }
         },
         {
-            new: true,
+            returnDocument: "after",
             runValidators: true
         }
     );
