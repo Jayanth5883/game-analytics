@@ -10,11 +10,15 @@ const options = {
             description: "Backend APIs for Unity game analytics"
         },
         servers: [
-            {
-                url: "http://localhost:3000",
-                description: "Local development server"
-            }
-        ],
+    {
+        url: "https://game-analytics-phs9.onrender.com",
+        description: "Production Server"
+    },
+    {
+        url: "http://localhost:3000",
+        description: "Local Development Server"
+    }
+],
         components: {
             securitySchemes: {
                 bearerAuth: {
